@@ -1,11 +1,11 @@
 import time
-import Adafruit_ADS1x15
+import adafruit_ads7830.ads7830 as ADC
+from adafruit_ads7830.analog_in import AnalogIn
+import board
+
+from database import plants
 
 def main():
-    adc = Adafruit_ADS1x15.ADS1115()
-
-    gain = 1
-
     try:
         while True:
             readings = read_moisture([0, 1, 2])
@@ -15,11 +15,11 @@ def main():
         print("Exiting...")
 
 def read_moisture(pinList):
-    adc = Adafruit_ADS1x15.ADS1115()
-    gain = 1
+    i2c = board.I2C()
+    adc = ADC.ADS7830(i2c)
     readings = []
     for item in pinList:
-        readings.append(adc.read(item, gain=gain))
+        readings.append(AnalogIn(adc, item).value)
     return readings
 
 
